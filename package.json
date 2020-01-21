@@ -1,0 +1,33 @@
+{
+  "name": "fastify-pg",
+  "version": "0.1.0",
+  "description": "Fastify PostgreSQL Plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap"
+  },
+  "repository": "git+https://github.com/arttolstykh/fastify-pg.git",
+  "keywords": [
+    "fastify",
+    "pg",
+    "postgres",
+    "postgresql",
+    "database",
+    "sql"
+  ],
+  "author": "Artem Tolstykh (aka Mr. Arch) - @arttolstykh <arttolstykh@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arttolstykh/fastify-pg/issues"
+  },
+  "homepage": "https://github.com/arttolstykh/fastify-pg#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "esm": "^3.2.25",
+    "fastify": "^2.11.0",
+    "fastify-plugin": "^1.6.0",
+    "folktale": "^2.3.2",
+    "pg": "^7.17.1",
+    "tap": "^14.10.6"
+  }
+}
