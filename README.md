@@ -1,23 +1,32 @@
 ```
-███████╗ █████╗ ███████╗████████╗██╗███████╗██╗   ██╗     ██████╗  ██████╗ 
-██╔════╝██╔══██╗██╔════╝╚══██╔══╝██║██╔════╝╚██╗ ██╔╝     ██╔══██╗██╔════╝ 
-█████╗  ███████║███████╗   ██║   ██║█████╗   ╚████╔╝█████╗██████╔╝██║  ███╗
-██╔══╝  ██╔══██║╚════██║   ██║   ██║██╔══╝    ╚██╔╝ ╚════╝██╔═══╝ ██║   ██║
-██║     ██║  ██║███████║   ██║   ██║██║        ██║        ██║     ╚██████╔╝
-╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝╚═╝        ╚═╝        ╚═╝      ╚═════╝  
+   ___                 __           ___                                       
+ /'___\               /\ \__  __  /'___\                                      
+/\ \__/   __      ____\ \ ,_\/\_\/\ \__/  __  __           _____      __      
+\ \ ,__\/'__`\   /',__\\ \ \/\/\ \ \ ,__\/\ \/\ \  _______/\ '__`\  /'_ `\    
+ \ \ \_/\ \L\.\_/\__, `\\ \ \_\ \ \ \ \_/\ \ \_\ \/\______\ \ \L\ \/\ \L\ \   
+  \ \_\\ \__/.\_\/\____/ \ \__\\ \_\ \_\  \/`____ \/______/\ \ ,__/\ \____ \  
+   \/_/ \/__/\/_/\/___/   \/__/ \/_/\/_/   `/___/> \        \ \ \/  \/___L\ \ 
+                                              /\___/         \ \_\    /\____/ 
+                                              \/__/           \/_/    \_/__/  
 ```
 # fastify-pg
-[Fastify](https://github.com/fastify/fastify) PostgreSQL plugin inspired by [fastify-postgres](https://github.com/fastify/fastify-postgres) and [typeorm](https://github.com/typeorm/typeorm).
+Fastify PostgreSQL plugin inspired by [fastify-postgres](https://github.com/fastify/fastify-postgres) and [typeorm](https://github.com/typeorm/typeorm).
 
 Dependencies: 
  - [esm](https://github.com/standard-things/esm)
  - [folktale](https://github.com/origamitower/folktale)
  - [pg](https://github.com/brianc/node-postgres)
+ - [fastify-plugin](https://github.com/fastify/fastify-plugin)
+ - [fastify](https://github.com/fastify/fastify)
 
 ## Install
 
 ```
-npm i esm folktale pg fastify fastify-plugin fastify-pg --save
+npm i esm folktale pg fastify-plugin fastify --save
+```
+
+```
+npm i fastify-pg --save
 ```
 
 ## Usage
@@ -163,7 +172,7 @@ DELETE FROM table_name WHERE column_1 = '1' AND column_2 = 2 OR column_3 = true 
 ```js
 transaction(async client => {
     const id 
-        = await QuryBulder
+        = await QueryBuilder
         .of(client, ['arttolstykh'])
         .insert()
         .into('table_name')

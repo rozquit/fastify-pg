@@ -65,3 +65,10 @@ typings/
 
 # npm package lock
 package-lock.json
+
+# JetBrains IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/

@@ -1,6 +1,6 @@
 {
   "name": "fastify-pg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fastify PostgreSQL Plugin",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,8 @@
   "repository": "git+https://github.com/arttolstykh/fastify-pg.git",
   "keywords": [
     "fastify",
+    "fastify-plugin",
+    "plugin",
     "pg",
     "postgres",
     "postgresql",
