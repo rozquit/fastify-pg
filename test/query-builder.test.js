@@ -131,3 +131,15 @@ tap.equal(
 		.getQuery(),
 	`DELETE FROM tests WHERE column_1 = '1' AND column_2 = 2 OR column_3 = true RETURNING *`,
 );
+
+tap.equal(
+	QueryBuilder
+		.of()
+		.select(['users.*', 'photos.*'])
+		.from('users')
+		.innerJoin('photos', 'photos.user = users.id')
+		.andWhere('photos.isRemoved = :isRemoved', {isRemoved: false})
+		.where('users.name = :username', {username: `'arttolstykh'`})
+		.getQuery(),
+	`SELECT users.*, photos.* FROM users INNER JOIN photos ON photos.user = users.id AND photos.isRemoved = false WHERE users.name = 'arttolstykh'`,
+);

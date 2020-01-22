@@ -42,12 +42,12 @@ This plugin will add the `pg` namespace in your Fastify instance, with the follo
 
 ```js
 const {
-  Client, // a client constructor for a single query
+  Client, // client constructor for a single query
   QueryBuilder, // query builder
-  pool, // the pool instance
-  connect, // the function to get a connection from the pool
-  query, // a utility to perform a query WITHOUT a transaction
-  transaction, // a utility to perform multiple queries WITH a transaction
+  pool, // pool instance
+  connect, // function to get a connection from the pool
+  query, // utility to perform a query WITHOUT a transaction
+  transaction, // utility to perform multiple queries WITH a transaction
 } = fastify.pg;
 ```
 
@@ -82,11 +82,28 @@ await QueryBuilder
   .where('column_1 = :column_1', {column_1: `'1'`})
   .andWhere('column_2 = :column_2', {column_2: 2})
   .orWhere('column_4 = :column_4', {column_4: false})
-  .getMany(); // .getOne();
+  .getMany();
 ```
 
 ```
 SELECT * FROM table_name WHERE column_1 = '1' AND column_2 = 2 OR column_4 = false;
+```
+
+###.innerJoin(tableName, expression)
+
+```js
+await QueryBuilder
+  .of(fastify.pg)
+  .select(['users.*', 'photos.*'])
+  .from('users')
+  .innerJoin('photos', 'photos.user = users.id')
+  .andWhere('photos.isRemoved = :isRemoved', {isRemoved: false})
+  .where('users.name = :username', {username: `'arttolstykh'`})
+  .getOne();
+```
+
+```
+SELECT users.*, photos.* FROM users INNER JOIN photos ON photos.user = users.id AND photos.isRemoved = false WHERE users.name = 'arttolstykh';
 ```
 
 ## .insert()

@@ -62,6 +62,10 @@ export default class QueryBuilder {
 		this.query += ` FROM ${tableName}`;
 		return this;
 	}
+	innerJoin (tableName, expression) {
+		this.query += ` INNER JOIN ${tableName} ON ${expression}`;
+		return this;
+	}
 	set(obj) {
 		this.query
 			+= ` SET ${toPairs(obj).map(([key, value]) =>
