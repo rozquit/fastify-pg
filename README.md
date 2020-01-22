@@ -89,7 +89,7 @@ await QueryBuilder
 SELECT * FROM table_name WHERE column_1 = '1' AND column_2 = 2 OR column_4 = false;
 ```
 
-###.innerJoin(tableName, expression)
+### .innerJoin(tableName, expression)
 
 ```js
 await QueryBuilder
