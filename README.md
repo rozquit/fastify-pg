@@ -1,13 +1,12 @@
 ```
-   ___                 __           ___                                       
- /'___\               /\ \__  __  /'___\                                      
-/\ \__/   __      ____\ \ ,_\/\_\/\ \__/  __  __           _____      __      
-\ \ ,__\/'__`\   /',__\\ \ \/\/\ \ \ ,__\/\ \/\ \  _______/\ '__`\  /'_ `\    
- \ \ \_/\ \L\.\_/\__, `\\ \ \_\ \ \ \ \_/\ \ \_\ \/\______\ \ \L\ \/\ \L\ \   
-  \ \_\\ \__/.\_\/\____/ \ \__\\ \_\ \_\  \/`____ \/______/\ \ ,__/\ \____ \  
-   \/_/ \/__/\/_/\/___/   \/__/ \/_/\/_/   `/___/> \        \ \ \/  \/___L\ \ 
-                                              /\___/         \ \_\    /\____/ 
-                                              \/__/           \/_/    \_/__/  
+        ##          ##
+          ##      ##         
+        ##############
+      ####  ######  ####
+    ######################
+    ##  ##############  ##     
+    ##  ##          ##  ##
+          ####  ####
 ```
 # fastify-pg
 
@@ -87,7 +86,7 @@ await QueryBuilder
 ```
 
 ```
-SELECT * FROM users WHERE users.id = 1 AND is_active = true OR users.deleted = false;
+SELECT * FROM users WHERE users.id = 1 AND users.is_active = true OR users.deleted = false;
 ```
 
 ## .innerJoin(tableName, expression)
@@ -226,13 +225,13 @@ COMMIT;
 - **columns**
 - **values**
 - **defaultValues**
-- **returning**
 - **limit**
 - **groupBy**
+- **returning**
 - **getQuery**
+- **execute**
 - **getOne**
 - **getMany**
-- **execute**
 
 # License
 

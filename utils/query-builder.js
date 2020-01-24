@@ -108,10 +108,6 @@ export default class QueryBuilder {
 		this.query += ' DEFAULT VALUES';
 		return this;
 	}
-	returning(elements) {
-		this.query += ` RETURNING ${elements.join(', ')}`;
-		return this;
-	}
 	limit(number) {
 		this.query += ` LIMIT ${number}`;
 		return this;
@@ -119,6 +115,10 @@ export default class QueryBuilder {
 	groupBy(elements) {
 		this.query
 			+= ` GROUP BY ${elements.join(', ')}`;
+		return this;
+	}
+	returning(elements) {
+		this.query += ` RETURNING ${elements.join(', ')}`;
 		return this;
 	}
 	getQuery() {
