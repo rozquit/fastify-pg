@@ -1,6 +1,3 @@
-import toPairs from 'folktale/core/object/to-pairs';
-import getValues from 'folktale/core/object/values';
-
 const {log} = console;
 
 export default class QueryBuilder {
@@ -13,6 +10,8 @@ export default class QueryBuilder {
 	static of(client, values) {
 		return new QueryBuilder(client, values);
 	};
+	toPairs = obj => Object.keys(obj).map(k => [k, obj[k]]);
+	getValues = (obj) => Object.keys(obj).map(k => obj[k]);
 	createColumnsExpression
 		= values =>
 		` (${values.join(', ')})`;
@@ -22,16 +21,16 @@ export default class QueryBuilder {
 			`(${valuesArray.map(value =>
 				value).join(', ')})`).join(', ')}`;
 	with(obj) {
-		const pairs = toPairs(obj);
+		const pairs = this.toPairs(obj);
 		this.query
 			+= `WITH${pairs.map(([key, value]) =>
 			` ${key} AS (${value})`)}`;
 		return this;
 	}
 	withRecursive(obj1, obj2) {
-		const values = getValues(obj2);
+		const values = this.getValues(obj2);
 		this.query
-			+= `WITH RECURSIVE ${toPairs(obj1).map(([key, values]) =>
+			+= `WITH RECURSIVE ${this.toPairs(obj1).map(([key, values]) =>
 			`${key}(${values.join(', ')})`)} AS (${values[0]} UNION ALL ${values[1]})`;
 		return this;
 	}
@@ -58,6 +57,10 @@ export default class QueryBuilder {
 		this.query += 'DELETE';
 		return this;
 	};
+	into(tableName) {
+		this.query += `INTO ${tableName}`;
+		return this;
+	}
 	from(tableName) {
 		this.query += ` FROM ${tableName}`;
 		return this;
@@ -68,33 +71,29 @@ export default class QueryBuilder {
 	}
 	set(obj) {
 		this.query
-			+= ` SET ${toPairs(obj).map(([key, value]) =>
+			+= ` SET ${this.toPairs(obj).map(([key, value]) =>
 			`${key} = ${value}`).join(', ')}`;
 		return this;
 	}
 	where(condition, obj) {
-		const pairs = toPairs(obj);
+		const pairs = this.toPairs(obj);
 		this.query
 			+= ` WHERE ${pairs.map(([key, value]) =>
 			`${condition.replace(`:${key}`, value)}`)}`;
 		return this;
 	}
 	andWhere(condition, obj) {
-		const pairs = toPairs(obj);
+		const pairs = this.toPairs(obj);
 		this.query
 			+= ` AND ${pairs.map(([key, value]) =>
 			`${condition.replace(`:${key}`, value)}`)}`;
 		return this;
 	}
 	orWhere(condition, obj) {
-		const pairs = toPairs(obj);
+		const pairs = this.toPairs(obj);
 		this.query
 			+= ` OR ${pairs.map(([key, value]) =>
 			`${condition.replace(`:${key}`, value)}`)}`;
-		return this;
-	}
-	into(tableName) {
-		this.query += `INTO ${tableName}`;
 		return this;
 	}
 	columns(elements) {

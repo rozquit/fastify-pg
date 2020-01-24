@@ -10,26 +10,27 @@
                                               \/__/           \/_/    \_/__/  
 ```
 # fastify-pg
+
 Fastify PostgreSQL plugin inspired by [fastify-postgres](https://github.com/fastify/fastify-postgres) and [typeorm](https://github.com/typeorm/typeorm).
 
 Dependencies: 
  - [esm](https://github.com/standard-things/esm)
- - [folktale](https://github.com/origamitower/folktale)
  - [pg](https://github.com/brianc/node-postgres)
  - [fastify-plugin](https://github.com/fastify/fastify-plugin)
  - [fastify](https://github.com/fastify/fastify)
 
-## Install
+# Install
 
 ```
-npm i esm folktale pg fastify-plugin fastify --save
+npm i esm pg fastify-plugin fastify --save
 ```
 
 ```
 npm i fastify-pg --save
 ```
 
-## Usage
+# Usage
+
 ```js
 import pg from 'fastify-pg';
 ```
@@ -53,7 +54,7 @@ const {
 
 For examples, please see the [fastify-postgres](https://github.com/fastify/fastify-postgres/blob/master/README.md) and [node-postgres](https://node-postgres.com/) documentation.
 
-## QueryBuilder
+# QueryBuilder
 
 ```js
 const {QueryBuilder, transaction} = fastify.pg;
@@ -64,12 +65,12 @@ const {QueryBuilder, transaction} = fastify.pg;
 ```js
 await QueryBuilder
   .of(fastify.pg)
-  .table('table_name')
+  .table('users')
   .execute();
 ```
 
 ```
-TABLE table_name;
+TABLE users;
 ```
 
 ## .select(elements)
@@ -78,18 +79,18 @@ TABLE table_name;
 await QueryBuilder
   .of(fastify.pg)
   .select(['*'])
-  .from('table_name')
-  .where('column_1 = :column_1', {column_1: `'1'`})
-  .andWhere('column_2 = :column_2', {column_2: 2})
-  .orWhere('column_4 = :column_4', {column_4: false})
+  .from('users')
+  .where('users.id = :id', {id: 1})
+  .andWhere('users.is_active = :is_active', {is_active: true})
+  .orWhere('users.deleted = :deleted', {deleted: false})
   .getMany();
 ```
 
 ```
-SELECT * FROM table_name WHERE column_1 = '1' AND column_2 = 2 OR column_4 = false;
+SELECT * FROM users WHERE users.id = 1 AND is_active = true OR users.deleted = false;
 ```
 
-### .innerJoin(tableName, expression)
+## .innerJoin(tableName, expression)
 
 ```js
 await QueryBuilder
@@ -112,29 +113,29 @@ SELECT users.*, photos.* FROM users INNER JOIN photos ON photos.user = users.id 
 await QueryBuilder
   .of(fastify.pg)
   .insert()
-  .into('table_name')
+  .into('users')
   .defaultValues()
   .returning(['*'])
   .execute();
 ```
 
 ```
-INSERT INTO table_name DEFAULT VALUES RETURNING *;
+INSERT INTO users DEFAULT VALUES RETURNING *;
 ```
 
 ```js
 await QueryBuilder
   .of(fastify.pg)
   .insert()
-  .into('table_name')
-  .columns(['column_1', 'column_2'])
-  .values([[`'1'`, `'2'`], [`'1'`, `'3'`]])
+  .into('users')
+  .columns(['first_name', 'last_name'])
+  .values([[`'Artem'`, `'Tolstykh'`], [`'Maksym'`, `'Bezruchko'`]])
   .returning(['*'])
   .execute();
 ```
 
 ```
-INSERT INTO table_name (column_1, column_2) VALUES ('1', '2'), ('1', '3') RETURNING *;
+INSERT INTO users (first_name, last_name) VALUES ('Artem', 'Tolstykh'), ('Maksym', 'Bezruchko') RETURNING *;
 ```
 
 ## .update(tableName)
@@ -142,16 +143,14 @@ INSERT INTO table_name (column_1, column_2) VALUES ('1', '2'), ('1', '3') RETURN
 ```js
 await QueryBuilder
   .of(fastify.pg)
-  .update('table_name')
-  .set({column_1: `'1'`, column_2: 2})
-  .where('column_3 = :column_3', {column_3: false})
-  .andWhere('column_5 = :column_5', {column_5: 5})
-  .orWhere('column_6 = :column_6', {column_6: true})
+  .update('users')
+  .set({first_name: `'Artem'`, last_name: `'Tolstykh'`})
+  .where('id = :id', {id: 1})
   .execute();
 ```
 
 ```
-UPDATE table_name SET column_1 = '1', column_2 = 2 WHERE column_3 = false AND column_5 = 5 OR column_6 = true;
+UPDATE users SET first_name = 'Artem', last_name = 'Tolstykh' WHERE id = 1;
 ```
 
 ## .delete()
@@ -160,28 +159,26 @@ UPDATE table_name SET column_1 = '1', column_2 = 2 WHERE column_3 = false AND co
 await QueryBuilder
   .of(fastify.pg)
   .delete()
-  .from('table_name')
+  .from('users')
   .execute();
 ```
 
 ```
-DELETE FROM table_name;
+DELETE FROM users;
 ```
 
 ```js
 await QueryBuilder
   .of(fastify.pg)
   .delete()
-  .from('table_name')
-  .where('column_1 = :column_1', {column_1: `'1'`})
-  .andWhere('column_2 = :column_2', {column_2: 2})
-  .orWhere('column_3 = :column_3', {column_3: true})
+  .from('users')
+  .where('id = :id', {id: 1})
   .returning(['*'])
   .execute();
 ```
 
 ```
-DELETE FROM table_name WHERE column_1 = '1' AND column_2 = 2 OR column_3 = true RETURNING *;
+DELETE FROM users WHERE id = 1 RETURNING *;
 ```
 
 ## transaction
@@ -192,7 +189,7 @@ transaction(async client => {
         = await QueryBuilder
         .of(client, ['arttolstykh'])
         .insert()
-        .into('table_name')
+        .into('users')
         .columns(['username'])
         .values([['$1']])
         .returning(['id'])
@@ -204,11 +201,39 @@ transaction(async client => {
 
 ```
 BEGIN;
-INSERT INTO table_name (username) VALUES ('arttolstykh') RETURNING id;
+INSERT INTO users (username) VALUES ('arttolstykh') RETURNING id;
 -- etc
 COMMIT;
 ```
 
-## License
+## QueryBuilder API
+
+- **of**
+- **with**
+- **withRecursive**
+- **insert**
+- **table**
+- **select**
+- **update**
+- **delete**
+- **into**
+- **from**
+- **innerJoin**
+- **set**
+- **where**
+- **andWhere**
+- **orWhere**
+- **columns**
+- **values**
+- **defaultValues**
+- **returning**
+- **limit**
+- **groupBy**
+- **getQuery**
+- **getOne**
+- **getMany**
+- **execute**
+
+# License
 
 Licensed under [MIT](./LICENSE).

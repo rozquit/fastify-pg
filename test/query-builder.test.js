@@ -57,22 +57,21 @@ tap.equal(
 tap.equal(
 	QueryBuilder
 		.of()
-		.table('tests')
+		.table('users')
 		.getQuery(),
-	`TABLE tests`,
+	`TABLE users`,
 );
 
 tap.equal(
 	QueryBuilder
 		.of()
 		.select(['*'])
-		.from('tests')
-		.where('column_1 = :column_1', {column_1: `'1'`})
-		.andWhere('column_2 = :column_2', {column_2: true})
-		.andWhere('column_3 = :column_3', {column_3: 3})
-		.orWhere('column_4 = :column_4', {column_4: false})
+		.from('users')
+		.where('id = :id', {id: 1})
+		.andWhere('is_active = :is_active', {is_active: true})
+		.orWhere('deleted = :deleted', {deleted: false})
 		.getQuery(),
-	`SELECT * FROM tests WHERE column_1 = '1' AND column_2 = true AND column_3 = 3 OR column_4 = false`,
+	`SELECT * FROM users WHERE id = 1 AND is_active = true OR deleted = false`,
 );
 
 tap.equal(
@@ -90,46 +89,42 @@ tap.equal(
 	QueryBuilder
 		.of()
 		.insert()
-		.into('tests')
-		.columns(['column_1', 'column_2'])
-		.values([[`'1'`, `'2'`], [`'1'`, `'3'`]])
+		.into('users')
+		.columns(['first_name', 'last_name'])
+		.values([[`'Artem'`, `'Tolstykh'`], [`'Maksym'`, `'Bezruchko'`]])
 		.returning(['*'])
 		.getQuery(),
-	`INSERT INTO tests (column_1, column_2) VALUES ('1', '2'), ('1', '3') RETURNING *`,
+	`INSERT INTO users (first_name, last_name) VALUES ('Artem', 'Tolstykh'), ('Maksym', 'Bezruchko') RETURNING *`,
 );
 
 tap.equal(
 	QueryBuilder
 		.of()
-		.update('tests')
-		.set({column_1: `'1'`, column_2: 2, column_3: true})
-		.where('column_4 = :column_4', {column_4: 4})
-		.andWhere('column_5 = :column_5', {column_5: 5})
-		.orWhere('column_6 = :column_6', {column_6: true})
+		.update('users')
+		.set({first_name: `'Artem'`, last_name: `'Tolstykh'`})
+		.where('id = :id', {id: 1})
 		.getQuery(),
-	`UPDATE tests SET column_1 = '1', column_2 = 2, column_3 = true WHERE column_4 = 4 AND column_5 = 5 OR column_6 = true`,
+	`UPDATE users SET first_name = 'Artem', last_name = 'Tolstykh' WHERE id = 1`,
 );
 
 tap.equal(
 	QueryBuilder
 		.of()
 		.delete()
-		.from('tests')
+		.from('users')
 		.getQuery(),
-	`DELETE FROM tests`,
+	`DELETE FROM users`,
 );
 
 tap.equal(
 	QueryBuilder
 		.of()
 		.delete()
-		.from('tests')
-		.where('column_1 = :column_1', {column_1: `'1'`})
-		.andWhere('column_2 = :column_2', {column_2: 2})
-		.orWhere('column_3 = :column_3', {column_3: true})
+		.from('users')
+		.where('id = :id', {id: 1})
 		.returning(['*'])
 		.getQuery(),
-	`DELETE FROM tests WHERE column_1 = '1' AND column_2 = 2 OR column_3 = true RETURNING *`,
+	`DELETE FROM users WHERE id = 1 RETURNING *`,
 );
 
 tap.equal(
