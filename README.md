@@ -1,13 +1,15 @@
 ```
-        ##          ##
-          ##      ##         
-        ##############
-      ####  ######  ####
-    ######################
-    ##  ##############  ##     
-    ##  ##          ##  ##
-          ####  ####
+      ##          ##
+        ##      ##
+      ##############
+    ####  ######  ####
+  ######################
+  ##  ##############  ##
+  ##  ##          ##  ##
+        ####  ####
+                    v0.1.3    
 ```
+
 # fastify-pg
 
 Fastify PostgreSQL plugin inspired by [fastify-postgres](https://github.com/fastify/fastify-postgres) and [typeorm](https://github.com/typeorm/typeorm).
