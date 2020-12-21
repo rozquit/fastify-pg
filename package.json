@@ -1,10 +1,10 @@
 {
   "name": "fastify-pg",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Fastify PostgreSQL Plugin",
   "main": "index.js",
   "scripts": {
-    "test": "tap"
+    "test": "standard && tap"
   },
   "repository": "git+https://github.com/arttolstykh/fastify-pg.git",
   "keywords": [
@@ -25,10 +25,10 @@
   "homepage": "https://github.com/arttolstykh/fastify-pg#readme",
   "dependencies": {},
   "devDependencies": {
-    "esm": "^3.2.25",
-    "fastify": "^3.8.0",
-    "fastify-plugin": "^3.0.0",
-    "pg": "^8.5.1",
-    "tap": "^14.11.0"
+    "fastify": "*",
+    "fastify-plugin": "*",
+    "pg": "*",
+    "standard": "*",
+    "tap": "*"
   }
 }

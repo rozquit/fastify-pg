@@ -7,37 +7,40 @@
   ##  ##############  ##
   ##  ##          ##  ##
         ####  ####
-                    v0.1.5    
+                    v0.1.6
 ```
 
 # fastify-pg
 
 Fastify PostgreSQL plugin inspired by [fastify-postgres](https://github.com/fastify/fastify-postgres) and [typeorm](https://github.com/typeorm/typeorm).
 
-Dependencies: 
- - [esm](https://github.com/standard-things/esm)
- - [pg](https://github.com/brianc/node-postgres)
- - [fastify-plugin](https://github.com/fastify/fastify-plugin)
+Dependencies:
  - [fastify](https://github.com/fastify/fastify)
+ - [fastify-plugin](https://github.com/fastify/fastify-plugin)
+ - [pg](https://github.com/brianc/node-postgres)
 
 # Install
 
 ```
-npm i esm pg fastify-plugin fastify --save
-```
-
-```
-npm i fastify-pg --save
+npm i fastify fastify-plugin fastify-pg pg --save
 ```
 
 # Usage
 
 ```js
-import pg from 'fastify-pg';
+const pg = require('fastify-pg')
 ```
 
+or
+
 ```js
-fastify.register(pg, options);
+import pg from 'fastify-pg'
+```
+
+Register plugin
+
+```js
+fastify.register(pg, options)
 ```
 
 This plugin will add the `pg` namespace in your Fastify instance, with the following properties:
@@ -45,12 +48,12 @@ This plugin will add the `pg` namespace in your Fastify instance, with the follo
 ```js
 const {
   Client, // client constructor for a single query
-  QueryBuilder, // query builder
   pool, // pool instance
   connect, // function to get a connection from the pool
   query, // utility to perform a query WITHOUT a transaction
   transaction, // utility to perform multiple queries WITH a transaction
-} = fastify.pg;
+  QueryBuilder // query builder
+} = fastify.pg
 ```
 
 For examples, please see the [fastify-postgres](https://github.com/fastify/fastify-postgres/blob/master/README.md) and [node-postgres](https://node-postgres.com/) documentation.
@@ -89,23 +92,6 @@ await QueryBuilder
 
 ```
 SELECT * FROM users WHERE users.id = 1 AND users.is_active = true OR users.deleted = false;
-```
-
-## .innerJoin(tableName, expression)
-
-```js
-await QueryBuilder
-  .of(fastify.pg)
-  .select(['users.*', 'photos.*'])
-  .from('users')
-  .innerJoin('photos', 'photos.user = users.id')
-  .andWhere('photos.isRemoved = :isRemoved', {isRemoved: false})
-  .where('users.name = :username', {username: `'arttolstykh'`})
-  .getOne();
-```
-
-```
-SELECT users.*, photos.* FROM users INNER JOIN photos ON photos.user = users.id AND photos.isRemoved = false WHERE users.name = 'arttolstykh';
 ```
 
 ## .insert()
@@ -180,6 +166,23 @@ await QueryBuilder
 
 ```
 DELETE FROM users WHERE id = 1 RETURNING *;
+```
+
+## .innerJoin(tableName, expression)
+
+```js
+await QueryBuilder
+  .of(fastify.pg)
+  .select(['users.*', 'photos.*'])
+  .from('users')
+  .innerJoin('photos', 'photos.user = users.id')
+  .andWhere('photos.isRemoved = :isRemoved', {isRemoved: false})
+  .where('users.name = :username', {username: `'arttolstykh'`})
+  .getOne();
+```
+
+```
+SELECT users.*, photos.* FROM users INNER JOIN photos ON photos.user = users.id AND photos.isRemoved = false WHERE users.name = 'arttolstykh';
 ```
 
 ## transaction

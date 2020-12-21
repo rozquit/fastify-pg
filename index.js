@@ -1,25 +1,30 @@
-import {Pool, Client} from 'pg';
-import fp from 'fastify-plugin';
-import {QueryBuilder, transaction} from './utils'
+const { Pool, Client } = require('pg')
+const fp = require('fastify-plugin')
+const { QueryBuilder, transaction } = require('./utils')
 
 const fastifyPg = (fastify, options, done) => {
-	try {
-		const name = options.name || 'pg';
-		const pool = new Pool(options);
-		const pg = {
-			Client,
-			QueryBuilder,
-			pool,
-			connect: pool.connect.bind(pool),
-			query: pool.query.bind(pool),
-			transaction: transaction(pool),
-		};
-		fastify.addHook('onClose', (context, done) => pool.end(done));
-		fastify.decorate(name, pg);
-		done();
-	} catch (err) {
-		done(err);
-	}
-};
+  try {
+    const name = options.name || 'pg'
 
-export default fp(fastifyPg, {fastify: '>=2.0.0', name: 'pg'});
+    const pool = new Pool(options)
+
+    const pg = {
+      Client,
+      pool,
+      connect: pool.connect.bind(pool),
+      query: pool.query.bind(pool),
+      transaction: transaction(pool),
+      QueryBuilder
+    }
+
+    fastify
+      .addHook('onClose', (context, done) => pool.end(done))
+      .decorate(name, pg)
+
+    done()
+  } catch (err) {
+    done(err)
+  }
+}
+
+module.exports = fp(fastifyPg, { fastify: '>=3.0.0', name: 'pg' })

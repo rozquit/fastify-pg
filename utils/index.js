@@ -1,4 +1,4 @@
-import transaction from './transaction';
-import QueryBuilder from './query-builder';
+const transaction = require('./transaction')
+const QueryBuilder = require('./query-builder')
 
-export {transaction, QueryBuilder};
+module.exports = { transaction, QueryBuilder }
