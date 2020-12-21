@@ -70,7 +70,7 @@ const { QueryBuilder, transaction } = fastify.pg
 await QueryBuilder
   .of(fastify.pg)
   .table('users')
-  .execute();
+  .execute()
 ```
 
 ```
@@ -87,7 +87,7 @@ await QueryBuilder
   .where('users.id = :id', {id: 1})
   .andWhere('users.is_active = :is_active', {is_active: true})
   .orWhere('users.deleted = :deleted', {deleted: false})
-  .getMany();
+  .getMany()
 ```
 
 ```
@@ -103,7 +103,7 @@ await QueryBuilder
   .into('users')
   .defaultValues()
   .returning(['*'])
-  .execute();
+  .execute()
 ```
 
 ```
@@ -118,7 +118,7 @@ await QueryBuilder
   .columns(['first_name', 'last_name'])
   .values([[`'Artem'`, `'Tolstykh'`], [`'Maksym'`, `'Bezruchko'`]])
   .returning(['*'])
-  .execute();
+  .execute()
 ```
 
 ```
@@ -133,7 +133,7 @@ await QueryBuilder
   .update('users')
   .set({first_name: `'Artem'`, last_name: `'Tolstykh'`})
   .where('id = :id', {id: 1})
-  .execute();
+  .execute()
 ```
 
 ```
@@ -147,7 +147,7 @@ await QueryBuilder
   .of(fastify.pg)
   .delete()
   .from('users')
-  .execute();
+  .execute()
 ```
 
 ```
@@ -161,7 +161,7 @@ await QueryBuilder
   .from('users')
   .where('id = :id', {id: 1})
   .returning(['*'])
-  .execute();
+  .execute()
 ```
 
 ```
@@ -178,7 +178,7 @@ await QueryBuilder
   .innerJoin('photos', 'photos.user = users.id')
   .andWhere('photos.isRemoved = :isRemoved', {isRemoved: false})
   .where('users.name = :username', {username: `'arttolstykh'`})
-  .getOne();
+  .getOne()
 ```
 
 ```
@@ -197,9 +197,9 @@ transaction(async client => {
         .columns(['username'])
         .values([['$1']])
         .returning(['id'])
-        .execute();
+        .execute()
     // etc
-    return id;
+    return id
 })
 ```
 
