@@ -7,7 +7,7 @@
   ##  ##############  ##
   ##  ##          ##  ##
         ####  ####
-                    v0.1.6
+                    v0.1.7
 ```
 
 # fastify-pg
@@ -61,7 +61,7 @@ For examples, please see the [fastify-postgres](https://github.com/fastify/fasti
 # QueryBuilder
 
 ```js
-const {QueryBuilder, transaction} = fastify.pg;
+const { QueryBuilder, transaction } = fastify.pg
 ```
 
 ## .table(tableName)
