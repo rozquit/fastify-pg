@@ -1,6 +1,6 @@
 {
   "name": "fastify-pg",
-  "version": "0.1.7",
+  "version": "0.1.6",
   "description": "Fastify PostgreSQL Plugin",
   "main": "index.js",
   "scripts": {
