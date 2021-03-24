@@ -1,6 +1,6 @@
 {
   "name": "fastify-pg",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "Fastify PostgreSQL Plugin",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,6 @@
     "url": "https://github.com/arttolstykh/fastify-pg/issues"
   },
   "homepage": "https://github.com/arttolstykh/fastify-pg#readme",
-  "dependencies": {},
   "devDependencies": {
     "fastify": "*",
     "fastify-plugin": "*",

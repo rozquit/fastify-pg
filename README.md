@@ -7,10 +7,11 @@
   ##  ##############  ##
   ##  ##          ##  ##
         ####  ####
-                    v0.1.6
 ```
 
-# fastify-pg
+# fastify-pg 
+
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 Fastify PostgreSQL plugin inspired by [fastify-postgres](https://github.com/fastify/fastify-postgres) and [typeorm](https://github.com/typeorm/typeorm).
 
@@ -77,6 +78,22 @@ await QueryBuilder
 TABLE users;
 ```
 
+## .insert()
+
+```js
+await QueryBuilder
+  .of(fastify.pg)
+  .insert()
+  .into('users')
+  .defaultValues()
+  .returning(['*'])
+  .execute()
+```
+
+```
+INSERT INTO users DEFAULT VALUES RETURNING *;
+```
+
 ## .select(elements)
 
 ```js
@@ -92,22 +109,6 @@ await QueryBuilder
 
 ```
 SELECT * FROM users WHERE users.id = 1 AND users.is_active = true OR users.deleted = false;
-```
-
-## .insert()
-
-```js
-await QueryBuilder
-  .of(fastify.pg)
-  .insert()
-  .into('users')
-  .defaultValues()
-  .returning(['*'])
-  .execute()
-```
-
-```
-INSERT INTO users DEFAULT VALUES RETURNING *;
 ```
 
 ```js
@@ -231,7 +232,10 @@ COMMIT;
 - **values**
 - **defaultValues**
 - **limit**
+- **offset**
 - **groupBy**
+- **orderBy**
+- **onConflict**
 - **returning**
 - **getQuery**
 - **execute**

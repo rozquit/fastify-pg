@@ -1,44 +1,54 @@
-const toPairs = obj => Object.keys(obj).map(k => [k, obj[k]])
-
-const getValues = (obj) => Object.keys(obj).map(k => obj[k])
-
-const createColumnsExpression = values => ` (${values.join(', ')})`
-
-const createValuesExpression = values =>
-  ` VALUES ${values.map(valuesArray => `(${valuesArray.map(value => value).join(', ')})`).join(', ')}`
-
 class QueryBuilder {
-  constructor (client, values) {
+  constructor (pool, values) {
     this.query = ''
     this.isTransaction = !!values
-    this.client = client
+    this.pool = pool
     this.valuesArray = values || []
+    this.res = []
   }
 
-  static of (client, values) {
-    return new QueryBuilder(client, values)
+  static of (pool, values) {
+    return new QueryBuilder(pool, values)
+  };
+
+  toPairs (obj) {
+    return Object.keys(obj).map(k => [k, obj[k]])
+  }
+
+  getValues (obj) {
+    return Object.keys(obj).map(k => obj[k])
+  }
+
+  createColumnsExpression (values) {
+    return ` (${values.join(', ')})`
+  }
+
+  createValuesExpression (values) {
+    return ` VALUES ${values.map(valuesArray =>
+      `(${valuesArray.map(value =>
+        value).join(', ')})`).join(', ')}`
   }
 
   with (obj) {
-    const pairs = toPairs(obj)
+    const pairs = this.toPairs(obj)
     this.query +=
       `WITH${pairs.map(([key, value]) =>
-      ` ${key} AS (${value})`)}`
+        ` ${key} AS (${value})`)}`
     return this
   }
 
   withRecursive (obj1, obj2) {
-    const values = getValues(obj2)
+    const values = this.getValues(obj2)
     this.query +=
-      `WITH RECURSIVE ${toPairs(obj1).map(([key, values]) =>
-      `${key}(${values.join(', ')})`)} AS (${values[0]} UNION ALL ${values[1]})`
+      `WITH RECURSIVE ${this.toPairs(obj1).map(([key, values]) =>
+        `${key}(${values.join(', ')})`)} AS (${values[0]} UNION ALL ${values[1]})`
     return this
   }
 
   insert () {
     this.query = 'INSERT '
     return this
-  }
+  };
 
   table (tableName) {
     this.query += `TABLE ${tableName}`
@@ -48,20 +58,20 @@ class QueryBuilder {
   select (elements) {
     this.query +=
       `${this.query.includes('WITH')
-      ? ` SELECT ${elements.join(', ')}`
-      : `SELECT ${elements.join(', ')}`}`
+        ? ` SELECT ${elements.join(', ')}`
+        : `SELECT ${elements.join(', ')}`}`
     return this
-  }
+  };
 
   update (tableName) {
     this.query += `UPDATE ${tableName || ''}`
     return this
-  }
+  };
 
   delete () {
     this.query += 'DELETE'
     return this
-  }
+  };
 
   into (tableName) {
     this.query += `INTO ${tableName}`
@@ -80,42 +90,42 @@ class QueryBuilder {
 
   set (obj) {
     this.query +=
-      ` SET ${toPairs(obj).map(([key, value]) =>
-      `${key} = ${value}`).join(', ')}`
+      ` SET ${this.toPairs(obj).map(([key, value]) =>
+        `${key} = ${value}`).join(', ')}`
     return this
   }
 
   where (condition, obj) {
-    const pairs = toPairs(obj)
+    const pairs = this.toPairs(obj)
     this.query +=
       ` WHERE ${pairs.map(([key, value]) =>
-      `${condition.replace(`:${key}`, value)}`)}`
+        `${condition.replace(`:${key}`, value)}`)}`
     return this
   }
 
   andWhere (condition, obj) {
-    const pairs = toPairs(obj)
+    const pairs = this.toPairs(obj)
     this.query +=
       ` AND ${pairs.map(([key, value]) =>
-      `${condition.replace(`:${key}`, value)}`)}`
+        `${condition.replace(`:${key}`, value)}`)}`
     return this
   }
 
   orWhere (condition, obj) {
-    const pairs = toPairs(obj)
+    const pairs = this.toPairs(obj)
     this.query +=
       ` OR ${pairs.map(([key, value]) =>
-      `${condition.replace(`:${key}`, value)}`)}`
+        `${condition.replace(`:${key}`, value)}`)}`
     return this
   }
 
   columns (elements) {
-    this.query += createColumnsExpression(elements)
+    this.query += this.createColumnsExpression(elements)
     return this
   }
 
   values (elements) {
-    this.query += createValuesExpression(elements)
+    this.query += this.createValuesExpression(elements)
     return this
   }
 
@@ -129,9 +139,26 @@ class QueryBuilder {
     return this
   }
 
+  offset (number) {
+    this.query += ` OFFSET ${number}`
+    return this
+  }
+
   groupBy (elements) {
     this.query +=
       ` GROUP BY ${elements.join(', ')}`
+    return this
+  }
+
+  orderBy (expression) {
+    this.query +=
+      ` ORDER BY ${expression}`
+    return this
+  }
+
+  onConflict (expression) {
+    this.query +=
+      ` ON CONFLICT ${expression}`
     return this
   }
 
@@ -142,12 +169,12 @@ class QueryBuilder {
 
   getQuery () {
     return this.query.trim()
-  }
+  };
 
   async execute () {
     return this.isTransaction
-      ? await this.client.query(this.query, this.valuesArray)
-      : await this.client.query(this.query += ';')
+      ? await this.pool.query(this.query, this.valuesArray)
+      : await this.pool.query(this.query += ';')
   }
 
   async getOne () {
@@ -155,9 +182,9 @@ class QueryBuilder {
     return res.rows[0]
   }
 
-  async getMany () {
+  async getMany (pluck = null) {
     const res = await this.execute()
-    return res.rows
+    return pluck ? res.rows.map(value => value[pluck]) : res.rows
   }
 }
 
